@@ -1,0 +1,10 @@
+*.log
+*.png
+*.jpg
+*.jpeg
+*.h5
+*.pdf
+*.docx
+*.pptx
+*.venv
+*.tmp

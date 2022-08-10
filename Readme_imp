@@ -1,0 +1,16 @@
+https://bbb.tu-dresden.de/b/nis-ocz-jzu-ntu.
+ 
+Step 1: srun -p alpha --time=24:00:00 --gres=gpu:1 -n 1 -A p_discoret --pty --mem-per-cpu=800 bash
+
+Step 2: module load modenv/hiera GCC/10.2.0 CUDA/11.1.1 OpenMPI/4.0.5 Python/3.8.6 PyTorch/1.9.0
+
+Step 3: source python-environments/torchvision_env/bin/activate
+
+Step 4: cd image_fusion
+
+Step 5: sbatch encrypto_colorfuse.sh
+
+
+
+/projects/p084/p_discoret
+/home/h3/issr292b/image_fusion/
