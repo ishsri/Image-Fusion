@@ -102,86 +102,82 @@ batch_size = 64
 gpu_ids = [0,1]
 
 
-
 # -------------------------------------------------------------------------------------------------------
-#   Define MaskNet Network
+#   Define DeepPedestrian Network
 # -------------------------------------------------------------------------------------------------------
-class MaskNet(nn.Module):
+class DeepPedestrian(nn.Module):
     def  __init__(self):
-        super(MaskNet, self).__init__()
-        #####encoder layer 1#####
-        self.layer1 = nn.Sequential(  #input shape (,2,256,256)
+        super(DeepPedestrian, self).__init__()
+        #####layer 1#####
+        self.conv1 = nn.Sequential(                             #input shape  (,2,256,256)
                          nn.Conv2d(in_channels=2, out_channels=48, kernel_size=3, stride=1, padding=1),
-                         nn.BatchNorm2d(48),
-                         nn.LeakyReLU(0.2,inplace=True)) #output shape (,48,256,256)   
-        #####encoder layer 2#####
-        self.layer2 = nn.Sequential(  #input shape (,48,256,256)
+                         nn.ReLU(),
                          nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
-                         nn.BatchNorm2d(48),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,48,256,256)
-        #####encoder layer 3#####
-        self.layer3 = nn.Sequential(  #input shape (,96,256,256)
-                         nn.Conv2d(in_channels = 96, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
-                         nn.BatchNorm2d(48),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,48,256,256)     
-        #####encoder layer 4#####
-        self.layer4 = nn.Sequential(  #input shape (,144,256,256)
-                         nn.Conv2d(in_channels = 144, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
-                         nn.BatchNorm2d(48),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,48,256,256) 
-        #####decoder layer 1#####
-        self.layer5 = nn.Sequential(  #input shape (,192,256,256)
-                         nn.Conv2d(in_channels = 192, out_channels = 192, kernel_size  = 3, stride= 1, padding = 1),
-                         nn.BatchNorm2d(192),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,192,256,256)    
-        #####decoder layer 2#####
-        self.layer6 = nn.Sequential(  #input shape (,192,256,256)
-                         nn.Conv2d(in_channels = 192, out_channels = 128, kernel_size  = 3, stride= 1, padding = 1),
-                         nn.BatchNorm2d(128),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,128,256,256)    
-        #####decoder layer 3#####
-        self.layer7 = nn.Sequential(  #input shape (,128,256,256)
-                         nn.Conv2d(in_channels = 128, out_channels = 64, kernel_size = 3, stride = 1, padding = 1),
-                         nn.BatchNorm2d(64),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,64,256,256)  
-        #####decoder layer 4#####
-        self.layer8 = nn.Sequential(#input shape (,64,256,256)
-                         nn.Conv2d(in_channels = 64, out_channels = 1, kernel_size = 3, stride = 1, padding = 1),
-                         nn.BatchNorm2d(1),
-                         nn.LeakyReLU(0.2,inplace=True))  #output shape (,1,256,256)          
- 
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1)
+                         )                                     #output shape (,48,256,256)   
+        #####layer 2#####
+        self.conv2 = nn.Sequential(                            #input shape  (,48,256,256)
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels=48, out_channels=48, kernel_size=3, stride=1, padding=1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1)
+                         )                                     #output shape (,48,256,256)   
+        #####layer 3#####
+        self.conv3 = nn.Sequential(                            #input shape  (,48,256,256)
+                         nn.ReLU(), 
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size=3, stride=1, padding=1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1)
+                         )                                     #output shape (,48,256,256)     
+        #####layer 4#####
+        self.conv4 = nn.Sequential(                            #input shape  (,48,256,256)
+                         nn.ReLU(), 
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size=3, stride=1, padding=1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1),
+                         nn.ReLU(),
+                         nn.Conv2d(in_channels = 48, out_channels = 48, kernel_size  = 3, stride= 1, padding = 1)
+                         )                                      #output shape (,48,256,256)  
+        #####layer 5#####
+        self.conv5 = nn.Sequential(                             #input shape (, 48, 256, 256)
+                          nn.ReLU(),
+                          nn.Conv2d(in_channels  = 48,  out_channels = 1, kernel_size  = 3, stride = 1, padding = 1)) 
+                                                                #output shape (,1, 256, 256)
+        
     def forward(self, x, y):
-        #encoder layer 1
-        en1 = self.layer1(torch.cat((x,y),dim=1))
-        #encoder layer 2
-        en2 = self.layer2(en1)
-        #concat layer 1
-        concat1 = torch.cat((en1,en2),dim=1)
-        #encoder layer 3
-        en3 = self.layer3(concat1)
-        #concat layer 2
-        concat2 = torch.cat((concat1,en3),dim=1)
-        #encoder layer 4
-        en4 = self.layer4(concat2)
-        #concat layer 3
-        concat3 = torch.cat((concat2,en4),dim=1)
-        #decoder layer 1
-        dec1 = self.layer5(concat3)
-        #decoder layer 2
-        dec2 = self.layer6(dec1)
-        #decoder layer 3
-        dec3 = self.layer7(dec2)
-        #decoder layer 4
-        dec4 = self.layer8(dec3)
-        #tanh layer
-        fused = torch.tanh(dec4)      
+        #layer 1
+        x1 = self.conv1(torch.cat((x,y),dim=1))
+        #layer 2
+        x2 = self.conv2(x1)
+        #residual layer
+        x3 = x1+x2
+        #layer 3
+        x4 = self.conv3(x3)
+        #layer 4
+        x5 = self.conv4(x4)
+        #residual layer
+        x6 = x4 + x5
+        #layer 5
+        fused = self.conv5(x6)
         return fused
         #execute the network
 
 
 
-
-model = MaskNet().to(device)
+model = DeepPedestrian().to(device)
 model = model.float()
 if device == 'cuda':
     net = torch.nn.DataParallel(model, gpu_ids)
@@ -193,7 +189,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum = 0.9)   # opt
 
 l2_loss   = nn.MSELoss() #MSEloss  
     
-lamda_ssim = 0.25
+lamda_ssim = 0.75
 lamda_l2 = 0.49
 lamda_fusion = 0.99
     
@@ -228,31 +224,30 @@ for epoch in range(EPOCHS):
     # run batch images
     batch_idxs = total_train_images // batch_size
     for idx in range(0, batch_idxs):
-        input_x  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,2,:,:].to(device)
-        input_y  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,3,:,:].to(device)
-        weight_map = model(input_x, input_y)
-        fused = weight_map*input_x[:,0:1,:,:] + (1-weight_map)*input_y[:,0:1,:,:]
+        input_  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,2:,:,:].to(device)
+        weight_map = model(input_)
+        fused = weight_map*input_[:,0:1,:,:] + (1-weight_map)*input_[:,1:2,:,:]
 
         
-        path_im = f"/home/h3/issr292b/image_fusion/train_samples/masknet/ssim_0.25/"
-        path_fused = f"/home/h3/issr292b/image_fusion/train_samples_fused/masknet/ssim_0.25/"
+        path_im = f"/home/h3/issr292b/image_fusion/train_samples/deep_pedestrian/ssim_0.75/"
+        path_fused = f"/home/h3/issr292b/image_fusion/train_samples_fused/deep_pedestrian/ssim_0.75/"
         os.makedirs(path_im, exist_ok=True)
         os.makedirs(path_fused, exist_ok=True)
         images_concat = torchvision.utils.make_grid(weight_map, nrow=int(weight_map.shape[0] ** 0.5), padding=2, pad_value=255)
         fused_save = torchvision.utils.make_grid(fused, nrow = int(fused.shape[0] ** 0.5), padding=2, pad_value=255)
         if count % 10 == 0:
-            torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/train_samples/masknet/ssim_0.25/count_{}.png'.format(count))
-            torchvision.utils.save_image(fused_save, '/home/h3/issr292b/image_fusion/train_samples_fused/masknet/ssim_0.25/count_{}.png'.format(count))
+            torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/train_samples/deep_pedestrian/ssim_0.75/count_{}.png'.format(count))
+            torchvision.utils.save_image(fused_save, '/home/h3/issr292b/image_fusion/train_samples_fused/deep_pedestrian/ssim_0.75/count_{}.png'.format(count))
           
         #SSIM loss for the fusion training
-        ssim_loss_t1ce  = 1 - ssim(fused, input_x[:,0:1,:,:],data_range=1)
-        ssim_loss_flair = 1 - ssim(fused, input_y[:,0:1,:,:],data_range=1)
+        ssim_loss_t1ce  = 1 - ssim(fused, input_[:,0:1,:,:],data_range=1)
+        ssim_loss_flair = 1 - ssim(fused, input_[:,1:2,:,:],data_range=1)
         #club the T1ce and flair ssim losses
         ssim_loss_combined = lamda_ssim * ssim_loss_t1ce + (1-lamda_ssim) * ssim_loss_flair
         
         #l2 loss for the fusion training
-        l2_loss_t1ce  = l2_loss(fused, input_x[:,0:1,:,:])
-        l2_loss_flair = l2_loss(fused, input_y[:,0:1,:,:])        
+        l2_loss_t1ce  = l2_loss(fused, input_[:,0:1,:,:])
+        l2_loss_flair = l2_loss(fused, input_[:,1:2,:,:])        
         #club the T1ce and flair l2 losses
         l2_loss_combined = lamda_l2 * l2_loss_t1ce + (1-lamda_l2) * l2_loss_flair        
         
@@ -294,32 +289,31 @@ for epoch in range(EPOCHS):
     batch_idxs_val = total_val_images // batch_size
     with torch.no_grad():
         for idx in range(0, batch_idxs_val):
-            input_val_x  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,2,:,:].to(device)
-            input_val_y  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,3,:,:].to(device)
+            input_val  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,2:,:,:].to(device)
                 
             
-            weight_map_val = model(input_val_x, input_val_y)
-            fused_val = weight_map_val*input_val_x[:,0:1,:,:] + (1-weight_map_val)*input_val_y[:,0:1,:,:]                
+            weight_map_val = model(input_val)
+            fused_val = weight_map_val*input_val[:,0:1,:,:] + (1-weight_map_val)*input_val[:,1:2,:,:]                
                 
             if epoch % 1 == 0:
-                path_im = f"/home/h3/issr292b/image_fusion/val_samples/masknet/ssim_0.25/"
-                path_weight_val = f"/home/h3/issr292b/image_fusion/val_samples_fused/masknet/ssim_0.25/"
+                path_im = f"/home/h3/issr292b/image_fusion/val_samples/deep_pedestrian/ssim_0.75/"
+                path_weight_val = f"/home/h3/issr292b/image_fusion/val_samples_fused/deep_pedestrian/ssim_0.75/"
                 os.makedirs(path_im, exist_ok=True)
                 os.makedirs(path_weight_val, exist_ok=True)
                 images_concat = torchvision.utils.make_grid(fused_val, nrow=int(fused_val.shape[0] ** 0.5), padding=2, pad_value=255)
                 weight_val = torchvision.utils.make_grid(weight_map_val, nrow=int(fused_val.shape[0] ** 0.5), padding=2, pad_value=255)
-                torchvision.utils.save_image(weight_val, '/home/h3/issr292b/image_fusion/val_samples/masknet/ssim_0.25/epoch_{}.png'.format(epoch))
-                torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/val_samples_fused/masknet/ssim_0.25/epoch_{}.png'.format(epoch))
+                torchvision.utils.save_image(weight_val, '/home/h3/issr292b/image_fusion/val_samples/deep_pedestrian/ssim_0.75/epoch_{}.png'.format(epoch))
+                torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/val_samples_fused/deep_pedestrian/ssim_0.75/epoch_{}.png'.format(epoch))
 
                 
-            ssim_loss_t1ce_val  = 1 - ssim(fused_val, input_val_x[:,0:1,:,:],data_range=1)
-            ssim_loss_flair_val = 1 - ssim(fused_val, input_val_y[:,0:1,:,:],data_range=1)
+            ssim_loss_t1ce_val  = 1 - ssim(fused_val, input_val[:,0:1,:,:],data_range=1)
+            ssim_loss_flair_val = 1 - ssim(fused_val, input_val[:,1:2,:,:],data_range=1)
             #club the T1ce and flair ssim losses
             ssim_loss_combined_val = lamda_ssim * ssim_loss_t1ce_val + (1-lamda_ssim) * ssim_loss_flair_val
             
             #l2 loss for the fusion training
-            l2_loss_t1ce_val  = l2_loss(fused_val, input_val_x[:,0:1,:,:])
-            l2_loss_flair_val = l2_loss(fused_val, input_val_y[:,0:1,:,:])   
+            l2_loss_t1ce_val  = l2_loss(fused_val, input_val[:,0:1,:,:])
+            l2_loss_flair_val = l2_loss(fused_val, input_val[:,1:2,:,:])   
             #club the T1ce and flair l2 losses
             l2_loss_combined_val = lamda_l2 * l2_loss_t1ce_val + (1-lamda_l2) * l2_loss_flair_val     
         
@@ -348,7 +342,7 @@ for epoch in range(EPOCHS):
         
         
     if epoch == 100:    
-        path = f"/home/h3/issr292b/image_fusion/epoch/masknet/"
+        path = f"/home/h3/issr292b/image_fusion/epoch/deep_pedestrian/"
         os.makedirs(path, exist_ok=True)
         # Save optimization status. We should save the objective value because the process may be
         # killed between saving the last model and recording the objective value to the storage.
@@ -369,6 +363,6 @@ for epoch in range(EPOCHS):
                 "training_loss_l2_flair": ep_l2_train_loss_flair,    
                 "validation_loss_l2_flair": ep_l2_val_loss_flair
             },
-            os.path.join(path, "model_0.25.pt"))
+            os.path.join(path, "model_0.75.pt"))
 
 
