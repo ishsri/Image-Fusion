@@ -1,4 +1,4 @@
-https://bbb.tu-dresden.de/b/nis-ocz-jzu-ntu.
+  https://bbb.tu-dresden.de/b/nis-ocz-jzu-ntu.
  
 Step 1: srun -p alpha --time=24:00:00 --gres=gpu:1 -n 1 -A p_discoret --pty --mem-per-cpu=800 bash
 

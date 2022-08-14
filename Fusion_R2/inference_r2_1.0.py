@@ -29,9 +29,6 @@ val_t1ce_tensor = hf['r_channel'][()]
 hf.close()
 val_data_tensor = np.concatenate((val_t1ce_tensor, val_flair_tensor), axis=1)
 
-for i in range(len(val_data_tensor)):
-    for j in range(6):
-        val_data_tensor[i,j,:,:] = (val_data_tensor[i,j,:,:] - np.min(val_data_tensor[i,j,:,:])) / (np.max(val_data_tensor[i,j,:,:]) - np.min(val_data_tensor[i,j,:,:]))
 
 
 #define the network
@@ -242,13 +239,13 @@ class def_model(nn.Module):
 
         
 model = def_model().to(device)
-gpu_ids = [0]
+gpu_ids = [0,1]
 model = model.float()
 if device == 'cuda':
     net = torch.nn.DataParallel(model, gpu_ids)
     cudnn.benchmark = True
         
-mod = torch.load(r"/home/h3/issr292b/image_fusion/epoch/model_r2_0.49.pt")
+mod = torch.load(r"/home/h3/issr292b/image_fusion/epoch/model_r2_1.0.pt")
 model_state_dict = mod["model_state_dict"]
 model.load_state_dict(model_state_dict)
 model.eval()
@@ -259,7 +256,7 @@ total_val_images = 1153
 
 for i in range(0, total_val_images):
     with torch.no_grad():
-        input_val  = val_data_tensor[i:,:,:,:].to(device)
+        input_val  = val_data_tensor[i:i+1,:,:,:].to(device)
         #input_val = torch.unsqueeze(input_val, 0)
         weight_map_val = model(input_val)
-        torchvision.utils.save_image(weight_map_val, '/home/h3/issr292b/image_fusion/inference_r2/0.49/weight_map/count_{}.png'.format(i))
+        torchvision.utils.save_image(weight_map_val, '/home/h3/issr292b/image_fusion/inference_r2/1.0/weight_map/count_{}.png'.format(i))

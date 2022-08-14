@@ -9,5 +9,5 @@
 #SBATCH --partition=alpha
 module load modenv/hiera GCC/10.2.0 CUDA/11.1.1 OpenMPI/4.0.5 Python/3.8.6 PyTorch/1.9.0
 source ~/python-environments/torchvision_env/bin/activate
-python training_r2.py 
+python masknet_0.0.py 
 
