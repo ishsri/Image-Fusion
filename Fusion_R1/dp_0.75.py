@@ -224,9 +224,10 @@ for epoch in range(EPOCHS):
     # run batch images
     batch_idxs = total_train_images // batch_size
     for idx in range(0, batch_idxs):
-        input_  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,2:,:,:].to(device)
-        weight_map = model(input_)
-        fused = weight_map*input_[:,0:1,:,:] + (1-weight_map)*input_[:,1:2,:,:]
+        input_x  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,2:3,:,:].to(device)
+        input_y  = train_data_tensor[idx*batch_size : (idx+1)*batch_size,3:,:,:].to(device)
+        weight_map = model(input_x, input_y)
+        fused = weight_map*input_x + (1-weight_map)*input_y
 
         
         path_im = f"/home/h3/issr292b/image_fusion/train_samples/deep_pedestrian/ssim_0.75/"
@@ -240,14 +241,14 @@ for epoch in range(EPOCHS):
             torchvision.utils.save_image(fused_save, '/home/h3/issr292b/image_fusion/train_samples_fused/deep_pedestrian/ssim_0.75/count_{}.png'.format(count))
           
         #SSIM loss for the fusion training
-        ssim_loss_t1ce  = 1 - ssim(fused, input_[:,0:1,:,:],data_range=1)
-        ssim_loss_flair = 1 - ssim(fused, input_[:,1:2,:,:],data_range=1)
+        ssim_loss_t1ce  = 1 - ssim(fused, input_x,data_range=1)
+        ssim_loss_flair = 1 - ssim(fused, input_y,data_range=1)
         #club the T1ce and flair ssim losses
         ssim_loss_combined = lamda_ssim * ssim_loss_t1ce + (1-lamda_ssim) * ssim_loss_flair
         
         #l2 loss for the fusion training
-        l2_loss_t1ce  = l2_loss(fused, input_[:,0:1,:,:])
-        l2_loss_flair = l2_loss(fused, input_[:,1:2,:,:])        
+        l2_loss_t1ce  = l2_loss(fused, input_x)
+        l2_loss_flair = l2_loss(fused, input_y)        
         #club the T1ce and flair l2 losses
         l2_loss_combined = lamda_l2 * l2_loss_t1ce + (1-lamda_l2) * l2_loss_flair        
         
@@ -289,11 +290,12 @@ for epoch in range(EPOCHS):
     batch_idxs_val = total_val_images // batch_size
     with torch.no_grad():
         for idx in range(0, batch_idxs_val):
-            input_val  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,2:,:,:].to(device)
+            input_val_x  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,2:3,:,:].to(device)
+            input_val_y  = val_data_tensor[idx*batch_size : (idx+1)*batch_size,3:,:,:].to(device)
                 
             
-            weight_map_val = model(input_val)
-            fused_val = weight_map_val*input_val[:,0:1,:,:] + (1-weight_map_val)*input_val[:,1:2,:,:]                
+            weight_map_val = model(input_val_x, input_val_y)
+            fused_val = weight_map_val*input_val_x + (1-weight_map_val)*input_val_y                
                 
             if epoch % 1 == 0:
                 path_im = f"/home/h3/issr292b/image_fusion/val_samples/deep_pedestrian/ssim_0.75/"
@@ -306,14 +308,14 @@ for epoch in range(EPOCHS):
                 torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/val_samples_fused/deep_pedestrian/ssim_0.75/epoch_{}.png'.format(epoch))
 
                 
-            ssim_loss_t1ce_val  = 1 - ssim(fused_val, input_val[:,0:1,:,:],data_range=1)
-            ssim_loss_flair_val = 1 - ssim(fused_val, input_val[:,1:2,:,:],data_range=1)
+            ssim_loss_t1ce_val  = 1 - ssim(fused_val, input_val_x,data_range=1)
+            ssim_loss_flair_val = 1 - ssim(fused_val, input_val_y,data_range=1)
             #club the T1ce and flair ssim losses
             ssim_loss_combined_val = lamda_ssim * ssim_loss_t1ce_val + (1-lamda_ssim) * ssim_loss_flair_val
             
             #l2 loss for the fusion training
-            l2_loss_t1ce_val  = l2_loss(fused_val, input_val[:,0:1,:,:])
-            l2_loss_flair_val = l2_loss(fused_val, input_val[:,1:2,:,:])   
+            l2_loss_t1ce_val  = l2_loss(fused_val, input_val_x)
+            l2_loss_flair_val = l2_loss(fused_val, input_val_y)   
             #club the T1ce and flair l2 losses
             l2_loss_combined_val = lamda_l2 * l2_loss_t1ce_val + (1-lamda_l2) * l2_loss_flair_val     
         
