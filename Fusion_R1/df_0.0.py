@@ -137,13 +137,13 @@ class DeepFuse(nn.Module):
         self.layer5 = ConvLayer_DeepFuse(32, 16, 5, last = nn.LeakyReLU)
         self.layer6 = ConvLayer_DeepFuse(16, 1, 5, last = nn.Tanh)
 
-    def setInput(self, y_1, y_2):
-        self.y_1 = y_1
-        self.y_2 = y_2
+    #def setInput(self, y_1, y_2):
+        #self.y_1 = y_1
+        #self.y_2 = y_2
 
-    def forward(self):
-        c11 = self.layer1(self.y_1)
-        c12 = self.layer1(self.y_2)
+    def forward(self, y_1, y_2):
+        c11 = self.layer1(y_1)
+        c12 = self.layer1(y_2)
         c21 = self.layer2(c11)
         c22 = self.layer2(c12)
         f_m = self.layer3(c21, c22)
