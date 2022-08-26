@@ -162,7 +162,7 @@ if device == 'cuda':
     cudnn.benchmark = True
         
 #define the optimizers and loss functions 
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum = 0.9)   # optimize all cnn parameters
+optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum = 0.9)   # optimize all cnn parameters
 #scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda= lambda epoch: 0.95 ** epoch)
 
 l2_loss   = nn.MSELoss() #MSEloss  
