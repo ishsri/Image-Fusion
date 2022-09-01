@@ -318,7 +318,7 @@ if device == 'cuda':
     cudnn.benchmark = True
         
 #define the optimizers and loss functions 
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum = 0.9)   # optimize all cnn parameters
+optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum = 0.9)   # optimize all cnn parameters
 #scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda= lambda epoch: 0.95 ** epoch)
 
 l2_loss   = nn.MSELoss() #MSEloss  
@@ -363,15 +363,15 @@ for epoch in range(EPOCHS):
         fused = weight_map*input_[:,0:1,:,:] + (1-weight_map)*input_[:,1:2,:,:]
 
         
-        path_im = f"/home/h3/issr292b/image_fusion/train_samples/ssim_0.25/"
-        path_fused = f"/home/h3/issr292b/image_fusion/train_samples_fused/ssim_0.25/"
+        path_im = f"/home/h3/issr292b/image_fusion/train_samples/en-de/ssim_0.25/"
+        path_fused = f"/home/h3/issr292b/image_fusion/train_samples_fused/en-de/ssim_0.25/"
         os.makedirs(path_im, exist_ok=True)
         os.makedirs(path_fused, exist_ok=True)
         images_concat = torchvision.utils.make_grid(weight_map, nrow=int(weight_map.shape[0] ** 0.5), padding=2, pad_value=255)
         fused_save = torchvision.utils.make_grid(fused, nrow = int(fused.shape[0] ** 0.5), padding=2, pad_value=255)
         if count % 10 == 0:
-            torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/train_samples/ssim_0.25/count_{}.png'.format(count))
-            torchvision.utils.save_image(fused_save, '/home/h3/issr292b/image_fusion/train_samples_fused/ssim_0.25/count_{}.png'.format(count))
+            torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/train_samples/en-de/ssim_0.25/count_{}.png'.format(count))
+            torchvision.utils.save_image(fused_save, '/home/h3/issr292b/image_fusion/train_samples_fused/en-de/ssim_0.25/count_{}.png'.format(count))
           
         #SSIM loss for the fusion training
         ssim_loss_t1ce  = 1 - ssim(fused, input_[:,0:1,:,:],data_range=1)
@@ -430,14 +430,14 @@ for epoch in range(EPOCHS):
             fused_val = weight_map_val*input_val[:,0:1,:,:] + (1-weight_map_val)*input_val[:,1:2,:,:]                
                 
             if epoch % 1 == 0:
-                path_im = f"/home/h3/issr292b/image_fusion/val_samples/ssim_0.25/"
-                path_weight_val = f"/home/h3/issr292b/image_fusion/val_samples_fused/ssim_0.25/"
+                path_im = f"/home/h3/issr292b/image_fusion/val_samples/en-de/ssim_0.25/"
+                path_weight_val = f"/home/h3/issr292b/image_fusion/val_samples_fused/en-de/ssim_0.25/"
                 os.makedirs(path_im, exist_ok=True)
                 os.makedirs(path_weight_val, exist_ok=True)
                 images_concat = torchvision.utils.make_grid(fused_val, nrow=int(fused_val.shape[0] ** 0.5), padding=2, pad_value=255)
                 weight_val = torchvision.utils.make_grid(weight_map_val, nrow=int(fused_val.shape[0] ** 0.5), padding=2, pad_value=255)
-                torchvision.utils.save_image(weight_val, '/home/h3/issr292b/image_fusion/val_samples/ssim_0.25/epoch_{}.png'.format(epoch))
-                torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/val_samples_fused/ssim_0.25/epoch_{}.png'.format(epoch))
+                torchvision.utils.save_image(weight_val, '/home/h3/issr292b/image_fusion/val_samples/en-de/ssim_0.25/epoch_{}.png'.format(epoch))
+                torchvision.utils.save_image(images_concat, '/home/h3/issr292b/image_fusion/val_samples_fused/en-de/ssim_0.25/epoch_{}.png'.format(epoch))
 
                 
             ssim_loss_t1ce_val  = 1 - ssim(fused_val, input_val[:,0:1,:,:],data_range=1)
@@ -476,7 +476,7 @@ for epoch in range(EPOCHS):
         
         
     if epoch == 100:    
-        path = f"/home/h3/issr292b/image_fusion/epoch/"
+        path = f"/home/h3/issr292b/image_fusion/epoch/en-de/"
         os.makedirs(path, exist_ok=True)
         # Save optimization status. We should save the objective value because the process may be
         # killed between saving the last model and recording the objective value to the storage.
