@@ -318,7 +318,7 @@ if device == 'cuda':
     cudnn.benchmark = True
         
 #define the optimizers and loss functions 
-optimizer = torch.optim.SGD(model.parameters(), lr=0.0001, momentum = 0.9)   # optimize all cnn parameters
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum = 0.9)   # optimize all cnn parameters
 #scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda= lambda epoch: 0.95 ** epoch)
 
 l2_loss   = nn.MSELoss() #MSEloss  
@@ -406,12 +406,12 @@ for epoch in range(EPOCHS):
     av_train_loss = np.average(loss_train)
     ep_train_loss.append(av_train_loss)
     
-    av_ssim_train_loss_t1ce = np.average(loss_ssim_train_t1ce)
+    #av_ssim_train_loss_t1ce = np.average(loss_ssim_train_t1ce)
     ep_ssim_train_loss_t1ce.append(av_ssim_train_loss_t1ce)
-    av_l2_train_loss_t1ce = np.average(loss_l2_train_t1ce)
+    #av_l2_train_loss_t1ce = np.average(loss_l2_train_t1ce)
     ep_l2_train_loss_t1ce.append(av_l2_train_loss_t1ce)
     
-    av_ssim_train_loss_flair = np.average(loss_ssim_train_flair)
+    #av_ssim_train_loss_flair = np.average(loss_ssim_train_flair)
     ep_ssim_train_loss_flair.append(av_ssim_train_loss_flair)
     av_l2_train_loss_flair = np.average(loss_l2_train_flair)
     ep_l2_train_loss_flair.append(av_l2_train_loss_flair)        

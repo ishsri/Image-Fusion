@@ -162,7 +162,7 @@ if device == 'cuda':
     cudnn.benchmark = True
         
 #define the optimizers and loss functions 
-optimizer = torch.optim.SGD(model.parameters(), lr=0.01, momentum = 0.9)   # optimize all cnn parameters
+optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum = 0.9)   # optimize all cnn parameters
 #scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_lambda= lambda epoch: 0.95 ** epoch)
 
 l2_loss   = nn.MSELoss() #MSEloss  
@@ -182,9 +182,17 @@ loss_ssim_val_t1ce = []
 loss_ssim_val_flair = []
 loss_l2_val_t1ce = []
 loss_l2_val_flair = []
+ssim_t1ce_train = []
+ssim_flair_train = []
+ssim_t1ce_val = []
+ssim_flair_val = []
     
     
 ep_train_loss = []
+ep_ssim_t1ce_train = []
+ep_ssim_flair_train = []    
+ep_ssim_t1ce_val = []
+ep_ssim_flair_val = []
 ep_ssim_train_loss_t1ce = []
 ep_ssim_train_loss_flair = []
 ep_l2_train_loss_t1ce = []
@@ -241,6 +249,8 @@ for epoch in range(EPOCHS):
             
         #store the training loss value at each epoch
         loss_train.append(fusion_loss_total.item())
+        ssim_t1ce_train.append(ssim_loss_t1ce.item())
+        ssim_flair_train.append(ssim_loss_flair.item())
         loss_ssim_train_t1ce.append(ssim_loss_t1ce.item())
         loss_ssim_train_flair.append(ssim_loss_flair.item())
         loss_l2_train_t1ce.append(l2_loss_t1ce.item())
@@ -251,6 +261,11 @@ for epoch in range(EPOCHS):
     av_train_loss = np.average(loss_train)
     ep_train_loss.append(av_train_loss)
     
+    av_ssim_t1ce_train = np.average(ssim_t1ce_train)
+    ep_ssim_t1ce_train.append(av_ssim_t1ce_train)
+    av_ssim_flair_train = np.average(ssim_flair_train)
+    ep_ssim_flair_train.append(av_ssim_flair_train)
+
     av_ssim_train_loss_t1ce = np.average(loss_ssim_train_t1ce)
     ep_ssim_train_loss_t1ce.append(av_ssim_train_loss_t1ce)
     av_l2_train_loss_t1ce = np.average(loss_l2_train_t1ce)
@@ -302,6 +317,8 @@ for epoch in range(EPOCHS):
                 
             loss_val.append(fusion_loss_total_val.item())
             loss_ssim_val_t1ce.append(ssim_loss_t1ce_val.item())
+            ssim_t1ce_val.append(ssim_loss_t1ce_val.item())
+            ssim_flair_val.append(ssim_loss_flair_val.item())
             loss_ssim_val_flair.append(ssim_loss_flair_val.item())
             loss_l2_val_t1ce.append(l2_loss_t1ce_val.item())
             loss_l2_val_flair.append(l2_loss_flair_val.item())    
@@ -309,6 +326,11 @@ for epoch in range(EPOCHS):
                 
         av_val_loss = np.average(loss_val)
         ep_val_loss.append(av_val_loss)
+
+        av_ssim_t1ce_val = np.average(ssim_t1ce_val)
+        ep_ssim_t1ce_val.append(av_ssim_t1ce_val)
+        av_ssim_flair_val = np.average(ssim_flair_val)
+        ep_ssim_flair_val.append(av_ssim_flair_val)
         
         av_ssim_val_loss_t1ce = np.average(loss_ssim_val_t1ce)
         ep_ssim_val_loss_t1ce.append(av_ssim_val_loss_t1ce)
@@ -332,12 +354,16 @@ for epoch in range(EPOCHS):
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
                 #"scheduler_state_dict": scheduler.state_dict(),
+                "ssim loss train t1ce": ssim_t1ce_train,
+                "ssim loss train flair": ssim_flair_train,
+                "ssim loss val t1ce": ssim_t1ce_val,
+                "ssim loss val flair": ssim_flair_val,
                 "training_loss_total": ep_train_loss,
                 "validation_loss_total": ep_val_loss,
-                "training_loss_ssim_t1ce": ep_ssim_train_loss_t1ce,
-                "validation_loss_ssim_t1ce": ep_ssim_val_loss_t1ce,
-                "training_loss_ssim_flair": ep_ssim_train_loss_flair,                     
-                "validation_loss_ssim_flair": ep_ssim_val_loss_flair,
+                "avg. training_loss_ssim_t1ce": ep_ssim_train_loss_t1ce,
+                "avg. validation_loss_ssim_t1ce": ep_ssim_val_loss_t1ce,
+                "avg. training_loss_ssim_flair": ep_ssim_train_loss_flair,                     
+                "avg. validation_loss_ssim_flair": ep_ssim_val_loss_flair,
                 "training_loss_l2_t1ce": ep_l2_train_loss_t1ce,
                 "validation_loss_l2_t1ce": ep_l2_val_loss_t1ce,
                 "training_loss_l2_flair": ep_l2_train_loss_flair,    
